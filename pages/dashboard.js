@@ -1,25 +1,22 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
-import { useMoralis } from "react-moralis";
 import Head from "next/head";
-import Dashboard from "./dashboard";
+import { Flex, Text, Button } from "@chakra-ui/react";
+import { useMoralis } from "react-moralis";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function Home() {
-  const { isAuthenticated, authenticate } = useMoralis();
+export default function Dashboard() {
+  const { isAuthenticated, logout, user } = useMoralis();
   const router = useRouter();
-
   useEffect(() => {
-    if (isAuthenticated) {
-      router.replace("/dashboard");
+    if (!isAuthenticated) {
+      router.replace('/');
     }
   }, [isAuthenticated]);
-
-  if (!isAuthenticated) {
+  if (isAuthenticated) {
     return (
       <>
         <Head>
-          <title>Login</title>
+          <title>Dashboard</title>
         </Head>
         <Flex
           direction="column"
@@ -30,10 +27,14 @@ export default function Home() {
           bgGradient="linear(to-br, red.400, orange.300)"
         >
           <Text fontSize="5xl" fontWeight="bold" color="white">
-            Hi!
+            Dashboard
           </Text>
-          <Button colorScheme="gray" onClick={() => authenticate({})}>
-            Login with Metamask
+          <Text fontSize="md" color="white" pb="4">
+            {" "}
+            Your eth address is: {user.get("ethAddress")}
+          </Text>
+          <Button colorScheme="gray" onClick={logout}>
+            Logout
           </Button>
         </Flex>
       </>
